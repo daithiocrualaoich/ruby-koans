@@ -31,6 +31,34 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 
 def score(dice)
   # You need to write this method
+  if dice.length == 0
+    return 0  
+  end
+  
+  ordered = dice.sort
+    
+  # A set of three ones is 1000 points
+  if ordered.length >= 3 && ordered.take(3).uniq == [1]
+    return 1000 + score(ordered.drop(3))  
+  end
+  
+  # A set of three numbers (other than ones) is worth 100 times the number.
+  if ordered.length >= 3 && ordered.take(3).uniq.length == 1
+    return ordered[0] * 100 + score(ordered.drop(3))  
+  end
+
+  # A one (that is not part of a set of three) is worth 100 points.
+  if ordered[0] == 1
+    return 100 + score(ordered.drop(1))  
+  end
+  
+  # A five (that is not part of a set of three) is worth 50 points.
+  if ordered[0] == 5
+    return 50 + score(ordered.drop(1))  
+  end
+
+  # Everything else is worth 0 points.
+  return score(dice.drop(1))  
 end
 
 class AboutScoringProject < EdgeCase::Koan
